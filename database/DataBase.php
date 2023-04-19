@@ -76,24 +76,19 @@ class DataBase
 
     //INSERT INTO tableName VALUES(?,?)
 
-    public function insert($tableName, $fields, $values)
+    public function insert($tableName, $fields, $values): bool
     {
-
-
-        try {
-
-            $stmt = $this->connection->prepare("INSERT INTO ".$tableName."(".implode(', ',$fields)." ,
-            created_at) VALUES ( :".implode(', :',$fields)." , now() );");
+        // try {
+            $stmt = $this->connection->prepare(
+				"INSERT INTO ".$tableName."(".implode(', ',$fields)." ,created_at) VALUES ( :".implode(', :',$fields)." , now() );");
 
             $stmt->execute(array_combine($fields, $values));
             return true;
-        } catch (PDOException $e) {
-
-            echo $e->getMessage();
-            return false;
-        }
-
-
+        // } catch (PDOException $e) {
+		//
+        //     echo $e->getMessage();
+        //     return false;
+        // }
     }
 
     //update $table set $fields='values' where id=?
