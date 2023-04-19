@@ -16,7 +16,7 @@ class Admin
 	
 	protected function redirect($url)
 	{
-		header('Location : ' . trim($this->currentDomain, '/ ') . '/' . trim($url, '/ '));
+		header('Location : localhost/project/admin/category');
 		exit;
 	}
 	

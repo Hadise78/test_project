@@ -30,7 +30,6 @@ class DataBase
                 $this->dbUsername, $this->dbPassword, $this->option);
 
 
-
         } catch (PDOException $e) {
             echo $e->getMessage();
             exit();
@@ -79,13 +78,13 @@ class DataBase
     public function insert($tableName, $fields, $values): bool
     {
         // try {
-            $stmt = $this->connection->prepare(
-				"INSERT INTO ".$tableName."(".implode(', ',$fields)." ,created_at) VALUES ( :".implode(', :',$fields)." , now() );");
+        $stmt = $this->connection->prepare(
+            "INSERT INTO " . $tableName . "(" . implode(', ', $fields) . " ,created_at) VALUES ( :" . implode(', :', $fields) . " , now() );");
 
-            $stmt->execute(array_combine($fields, $values));
-            return true;
+        $stmt->execute(array_combine($fields, $values));
+        return true;
         // } catch (PDOException $e) {
-		//
+        //
         //     echo $e->getMessage();
         //     return false;
         // }
@@ -94,63 +93,58 @@ class DataBase
     //update $table set $fields='values' where id=?
 
 
-public function update($tableName,$id,$fields,$values){
+    public function update($tableName, $id, $fields, $values)
+    {
 
-        $sql="UPDATE ".$tableName." SET";
-foreach (array_combine($fields,$values) as $field=>$value){
-
-
-    if($value){
-
-        $sql .=" `".$field." `= ? ,";
+        $sql = "UPDATE " . $tableName . " SET";
+        foreach (array_combine($fields, $values) as $field => $value) {
 
 
-    }else{
+            if ($value) {
 
-        $sql .=" `".$field." `=NULL ,";
+                $sql .= " `" . $field . " `= ? ,";
+
+
+            } else {
+
+                $sql .= " `" . $field . " `=NULL ,";
+            }
+
+            $sql .= " updated_at = now()";
+            $sql .= "WHERE id= ?";
+
+
+        }
+
+        try {
+
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute(array_merge(array_filter(array_values($values)), [$id]));
+
+        } catch (PDOException $e) {
+
+            $e->getMessage();
+            return false;
+        }
+
+
     }
-
-    $sql .=" updated_at = now()";
-    $sql .="WHERE id= ?";
-
-
-
-}
-
-    try {
-
-    $stmt=$this->connection->prepare($sql);
-    $stmt->execute(array_merge(array_filter(array_values($values)),[$id]));
-
-    }catch (PDOException $e){
-
-    $e->getMessage();
-    return false;
-    }
-
-
-
-
-}
-
-
-
-
 
 
     // delete delete from $table name WHERE id=?
 
-    public function delete($tableName,$id){
+    public function delete($tableName, $id)
+    {
 
-        $sql="DELETE FROM".$tableName." WHERE id = ? ;";
+        $sql = "DELETE FROM" . $tableName . " WHERE id = ? ;";
 
         try {
 
-            $stmt=$this->connection->prepare($sql);
+            $stmt = $this->connection->prepare($sql);
             $stmt->execute([$id]);
             return true;
 
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
 
 
             echo $e->getMessage();
@@ -158,13 +152,11 @@ foreach (array_combine($fields,$values) as $field=>$value){
         }
 
 
-
-
-
     }
 
 
-    public function createTable($sql){
+    public function createTable($sql)
+    {
 
 
         try {
@@ -172,23 +164,14 @@ foreach (array_combine($fields,$values) as $field=>$value){
             $this->connection->exec($sql);
             return true;
 
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
 
             echo $e->getMessage();
             return false;
         }
 
 
-
-
-
-
-
-
-
-
     }
-
 
 
 }
